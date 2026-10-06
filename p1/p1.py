@@ -129,3 +129,27 @@ for i in range (len(sigmas)):
 
 #plt.show()
 
+#Vemos en donde están los mínimos de cada RMSE para poder graficar el punto
+min1 = np.argmin(rmsem1)
+min2 = np.argmin(rmsem2)
+min3 = np.argmin(rmsem3)
+ming = np.argmin(rmseg)
+
+#Graficamos las curvas de cada RMSE
+plt.figure(figsize =(12, 4))
+plt.plot(sigmas, rmsem1, label = "Máscara 1 (círculo)")
+plt.plot(sigmas, rmsem2, label = "Máscara 2 (cuadrado exc. círculo)")
+plt.plot(sigmas, rmsem3, label = "Máscara 3 (fondo)")
+plt.plot(sigmas, rmseg, label = "Global")
+
+#Ocupamos los índices calculados anteriormente, y graficamos los mínimos como puntos del mismo color de las curvas
+plt.plot(sigmas[min1], rmsem1[min1], color="blue", marker="o", label=f"Mín m1 ({np.round(sigmas[min1],3)}, {np.round(rmsem1[min1],3)})")
+plt.plot(sigmas[min2], rmsem2[min2], color="orange", marker="o", label=f"Mín m2 ({np.round(sigmas[min2],3)}, {np.round(rmsem1[min2],3)})")
+plt.plot(sigmas[min3], rmsem3[min3], color="green", marker="o", label=f"Mín m3 ({np.round(sigmas[min3],3)}, {np.round(rmsem1[min3],3)})")
+plt.plot(sigmas[ming], rmseg[ming], color="red", marker="o", label=f"Mín global ({np.round(sigmas[ming],3)}, {np.round(rmsem1[ming],3)})")
+
+plt.xlabel("Sigma")
+plt.ylabel("RMSE")
+plt.legend()
+plt.title("Gráfica de RMSE para cada sigma definido")
+plt.show()
