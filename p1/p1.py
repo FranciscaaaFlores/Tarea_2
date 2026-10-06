@@ -71,21 +71,61 @@ def kernelgaussianoyfiltrado(imagen, sigma):
 
     #Para aplicar el kernel realizado, lo convolucionamos con la imagen. Para esto utilizamos la función convolve2d de
     #SciPy
-    imagenfiltrada = convolve2d(imagen, kernelgaussnormalizado)
+    imagenfiltrada = convolve2d(imagen, kernelgaussnormalizado, mode = "same")
 
     return imagenfiltrada
 
 #Aquí se puede modificar el parámetro sigma 
-sigma = 2
-imagenfiltrada = kernelgaussianoyfiltrado(ruidopoisson, sigma= sigma)
+#sigma = 2
+#imagenfiltrada = kernelgaussianoyfiltrado(ruidopoisson, sigma= sigma)
 
-plt.figure(figsize=(12, 4))
-plt.subplot(1, 2, 1)
-plt.imshow(ruidopoisson, cmap="gray")
-plt.title("Imagen con ruido Poisson")
+#Para la experimentación y análisis, se define un areglo con todos los sigmas probados para graficar. 
+sigmas = [0.5, 0.8, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 7, 10] 
+#Creamos 4 arreglos para almacenar los resultados de los RMSE (máscara 1, máscara 2, máscara 3 y global)
+rmsem1 = []
+rmsem2 = []
+rmsem3 = []
+rmseg = []
 
-plt.subplot(1, 2, 2)
-plt.imshow(imagenfiltrada, cmap="gray")
-plt.title(f"Imagen Filtrada (sigma = {sigma})")
+#Recorremos los sigmas, calculando la imagen filtrada con el valor correspondiente. Luego calculamos el error para finalmente
+#calcular los 4 RMSE solicitados (añadiendolos al respectivo arreglo para facilitar luego la gráfica)
+for sigma in sigmas:
+    imagenfiltrada = kernelgaussianoyfiltrado(ruidopoisson, sigma= sigma)
+    error = ims - imagenfiltrada
+    rmsem1.append((np.sqrt(np.sum((error * m1)**2)/np.sum(m1))))
+    rmsem2.append(np.sqrt(np.sum((error * m2)**2)/np.sum(m2)))
+    rmsem3.append(np.sqrt(np.sum((error * m3)**2)/np.sum(m3)))
+    rmseg.append(np.sqrt(np.mean(error**2)))
 
-plt.show()
+    #plt.figure(figsize=(12, 4))
+    #plt.subplot(1, 2, 1)
+    #plt.imshow(ruidopoisson, cmap="gray")
+    #plt.title("Imagen con ruido Poisson")
+
+    #plt.subplot(1, 2, 2)
+    #plt.imshow(imagenfiltrada, cmap="gray")
+    #plt.title(f"Imagen Filtrada (sigma = {sigma})")
+
+    #plt.show()
+
+
+#Se imprimen los valores solicitados
+for i in range (len(sigmas)):
+    print(f"Sigma = {sigmas[i]}")
+    print(f"RMSE m1 = {np.round(rmsem1[i],3)}")
+    print(f"RMSE m2 = {np.round(rmsem2[i],3)}")
+    print(f"RMSE m3 = {np.round(rmsem3[i],3)}")
+    print(f"RMSE global = {np.round(rmseg[i],3)}")
+    print("__________________________________________________")
+
+#plt.figure(figsize=(12, 4))
+#plt.subplot(1, 2, 1)
+#plt.imshow(ruidopoisson, cmap="gray")
+#plt.title("Imagen con ruido Poisson")
+
+#plt.subplot(1, 2, 2)
+#plt.imshow(imagenfiltrada, cmap="gray")
+#plt.title(f"Imagen Filtrada (sigma = {sigma})")
+
+#plt.show()
+
