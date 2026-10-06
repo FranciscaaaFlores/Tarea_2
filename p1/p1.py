@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.signal import convolve2d
 
 #Creamos arreglo, matriz para la imagen sintética (de 256x256)
 ims = np.zeros((256, 256))
@@ -54,3 +55,18 @@ def mascaras(arreglo):
 m1 = mascaras(ims)[0] #circulo
 m2 = mascaras(ims)[1]#cuadrado excluyendo el círculo
 m3 = mascaras(ims)[2] #fondo
+
+def kernelgaussianoyfiltrado(imagen, sigma):
+    #En las cápsulas pudimos ver un ejemplo de kernel 5x5 (-2, 2, 5) y sigma = 1, en este caso es necesario
+    #adaptar el kernel en función de sigma (no necesariamente 1), con la cantidad de puntos necesarios (considerando
+    #que esta sea simétrica e impar)
+    x = np.linspace(-2 * sigma, 2 * sigma, int((2 * sigma)+ 1))
+    y = np.linspace(-2 * sigma, 2 * sigma, int((2 * sigma)+ 1))
+    kx, ky = np.meshgrid(x, y)
+
+    #Usamos lo visto en las cápsulas y la función gaussiana de la clase 8
+    kernelgauss = np.exp(-(kx**2 + ky**2) / (2 *(sigma**2)))
+    #Se normaliza para mantener la energía de la imagen
+    kernelgaussnormalizado = kernelgauss / np.sum(kernelgauss)
+    
+    return kernelgaussnormalizado
