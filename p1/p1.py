@@ -26,3 +26,6 @@ for y in range(256):
         #De no ser parte del círculo entra a la función creada para definir si será fondo o parte del cuadrado.
         elif distancia > 32:
             ims[y,x] = dentrodelcuadrado(y,x)
+
+np.random.seed(12) #semilla fija para el generador aleatorio
+ruidopoisson = np.random.poisson(40* ims) / 40 #definimos el ruido Poisson con la información del enunciado
