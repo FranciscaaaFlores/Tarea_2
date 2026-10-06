@@ -68,5 +68,24 @@ def kernelgaussianoyfiltrado(imagen, sigma):
     kernelgauss = np.exp(-(kx**2 + ky**2) / (2 *(sigma**2)))
     #Se normaliza para mantener la energía de la imagen
     kernelgaussnormalizado = kernelgauss / np.sum(kernelgauss)
-    
-    return kernelgaussnormalizado
+
+    #Para aplicar el kernel realizado, lo convolucionamos con la imagen. Para esto utilizamos la función convolve2d de
+    #SciPy
+    imagenfiltrada = convolve2d(imagen, kernelgaussnormalizado)
+
+    return imagenfiltrada
+
+#Aquí se puede modificar el parámetro sigma 
+sigma = 2
+imagenfiltrada = kernelgaussianoyfiltrado(ruidopoisson, sigma= sigma)
+
+plt.figure(figsize=(12, 4))
+plt.subplot(1, 2, 1)
+plt.imshow(ruidopoisson, cmap="gray")
+plt.title("Imagen con ruido Poisson")
+
+plt.subplot(1, 2, 2)
+plt.imshow(imagenfiltrada, cmap="gray")
+plt.title(f"Imagen Filtrada (sigma = {sigma})")
+
+plt.show()
