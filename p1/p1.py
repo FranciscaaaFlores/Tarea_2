@@ -129,6 +129,7 @@ for i in range (len(sigmas)):
 
 #plt.show()
 
+#___________________________________exp y análisis__________________________
 #Vemos en donde están los mínimos de cada RMSE para poder graficar el punto
 min1 = np.argmin(rmsem1)
 min2 = np.argmin(rmsem2)
@@ -136,20 +137,100 @@ min3 = np.argmin(rmsem3)
 ming = np.argmin(rmseg)
 
 #Graficamos las curvas de cada RMSE
-plt.figure(figsize =(12, 4))
-plt.plot(sigmas, rmsem1, label = "Máscara 1 (círculo)")
-plt.plot(sigmas, rmsem2, label = "Máscara 2 (cuadrado exc. círculo)")
-plt.plot(sigmas, rmsem3, label = "Máscara 3 (fondo)")
-plt.plot(sigmas, rmseg, label = "Global")
+#plt.figure(figsize =(12, 4))
+#plt.plot(sigmas, rmsem1, label = "Máscara 1 (círculo)")
+#plt.plot(sigmas, rmsem2, label = "Máscara 2 (cuadrado exc. círculo)")
+#plt.plot(sigmas, rmsem3, label = "Máscara 3 (fondo)")
+#plt.plot(sigmas, rmseg, label = "Global")
 
 #Ocupamos los índices calculados anteriormente, y graficamos los mínimos como puntos del mismo color de las curvas
-plt.plot(sigmas[min1], rmsem1[min1], color="blue", marker="o", label=f"Mín m1 ({np.round(sigmas[min1],3)}, {np.round(rmsem1[min1],3)})")
-plt.plot(sigmas[min2], rmsem2[min2], color="orange", marker="o", label=f"Mín m2 ({np.round(sigmas[min2],3)}, {np.round(rmsem1[min2],3)})")
-plt.plot(sigmas[min3], rmsem3[min3], color="green", marker="o", label=f"Mín m3 ({np.round(sigmas[min3],3)}, {np.round(rmsem1[min3],3)})")
-plt.plot(sigmas[ming], rmseg[ming], color="red", marker="o", label=f"Mín global ({np.round(sigmas[ming],3)}, {np.round(rmsem1[ming],3)})")
+#plt.plot(sigmas[min1], rmsem1[min1], color="blue", marker="o", label=f"Mín m1 ({np.round(sigmas[min1],3)}, {np.round(rmsem1[min1],3)})")
+#plt.plot(sigmas[min2], rmsem2[min2], color="orange", marker="o", label=f"Mín m2 ({np.round(sigmas[min2],3)}, {np.round(rmsem2[min2],3)})")
+#plt.plot(sigmas[min3], rmsem3[min3], color="green", marker="o", label=f"Mín m3 ({np.round(sigmas[min3],3)}, {np.round(rmsem3[min3],3)})")
+#plt.plot(sigmas[ming], rmseg[ming], color="red", marker="o", label=f"Mín global ({np.round(sigmas[ming],3)}, {np.round(rmseg[ming],3)})")
 
-plt.xlabel("Sigma")
-plt.ylabel("RMSE")
-plt.legend()
-plt.title("Gráfica de RMSE para cada sigma definido")
+#plt.xlabel("Sigma")
+#plt.ylabel("RMSE")
+#plt.legend()
+#plt.title("Gráfica de RMSE para cada sigma definido")
+#plt.show()
+
+#_____________________________
+#Para el filtro adaptativo generaremos una función por tramos en donde se asigne un sigma cercano al optimo, 
+#pues se vio que en los 4 casos era sigma = 3, entonces para no asignar el mismo sigma a todas las zonas
+#se decidió utilizar los más cercanos sin aumentar de gran manera el RMSE
+def sigmasadaptativos(imagen):
+    primerfiltrado = kernelgaussianoyfiltrado(ruidopoisson, sigma = 2.5)
+    #El filtrado auxiliar se hace con sigma = 1, tal como se explica en el informe, no se escoge sigma = 3
+    #debido a que el hacer el mejor filtrado gaussiano de una vez y luego aplicar el adaptativo genera distorsiones
+    #en los bordes de zonas como el círculo.
+    sigma = np.zeros((256, 256))
+    for y in range(256):
+        for x in range(256):
+            refintensidad = primerfiltrado[y,x]
+            if refintensidad <= 0.3:
+                sigma[y,x] = 2 #para zonas como el fondo, el sigma optimo establecido será 2
+            elif (refintensidad > 0.3 and refintensidad <= 0.7):
+                sigma[y,x] = 3 #para zonas como el cuadrado, el sigma optimo establecido será 3 (el óptimo real)
+            else:
+                sigma[y, x] = 3.5 #para zonas como el círculo, el sigma optimo establecido será 3.5
+    return sigma
+
+arreglosigma = sigmasadaptativos(ruidopoisson)  
+
+#Definimos una función para el filtro adaptativo
+def filtradoadaptativo(imagen, arreglosigma):
+    imagenfiltradoadaptativo = np.zeros((256, 256))
+    imi1 = kernelgaussianoyfiltrado(imagen, sigma = 2)
+    imi2 = kernelgaussianoyfiltrado(imagen, sigma = 3)
+    imi3 = kernelgaussianoyfiltrado(imagen, sigma = 3.5)
+    for y in range(256):
+        for x in range(256):
+            scorresponde = arreglosigma[y,x]
+            if scorresponde == 2:
+                imagenfiltradoadaptativo[y,x] = imi1[y,x]
+            elif scorresponde == 3:
+                imagenfiltradoadaptativo[y,x] = imi2[y,x]
+            elif scorresponde == 3.5:
+                imagenfiltradoadaptativo[y,x] = imi3[y,x]
+
+    return imagenfiltradoadaptativo
+
+imagenfiltradoadaptativo = filtradoadaptativo(ruidopoisson, arreglosigma)
+mejorfiltrogaussiano = kernelgaussianoyfiltrado(ruidopoisson, 3)
+plt.figure(figsize=(10, 8))
+
+plt.subplot(2, 2, 1)
+plt.imshow(ruidopoisson, cmap="gray")
+plt.title("Imagen con ruido Poisson")
+
+plt.subplot(2, 2, 2)
+plt.imshow(imagenfiltradoadaptativo, cmap="gray")
+plt.title("Imagen con filtrado adaptativo")
+
+#plt.subplot(2, 1, 2)
+#plt.imshow(ims, cmap="gray")
+#plt.title("Imagen Original (sin ruido)")
+plt.subplot(2, 1, 2)
+plt.imshow(mejorfiltrogaussiano, cmap="gray")
+plt.title("Mejor filtrado gaussiano, sigma = 3")
+
 plt.show()
+#_____________
+plt.figure(figsize=(6, 6))
+plt.imshow(arreglosigma, cmap="viridis") 
+plt.colorbar(label="Valor de sigma asignado")
+plt.title("Mapa de sigmas $\\sigma(x,y)$")
+plt.show()
+
+#Se imprimen los valores solicitados, esta vez para el filtro adaptativo
+#print("Valores para Filtro Adaptativo")
+error = ims - imagenfiltradoadaptativo
+rmsem1a = np.sqrt(np.sum((error * m1)**2)/np.sum(m1))
+rmsem2a = np.sqrt(np.sum((error * m2)**2)/np.sum(m2))
+rmsem3a = np.sqrt(np.sum((error * m3)**2)/np.sum(m3))
+rmsega = np.sqrt(np.mean(error**2))
+#print(f"RMSE m1 = {np.round(rmsem1a,3)}")
+#print(f"RMSE m2 = {np.round(rmsem2a,3)}")
+#print(f"RMSE m3 = {np.round(rmsem3a,3)}")
+#print(f"RMSE global = {np.round(rmsega,3)}")
