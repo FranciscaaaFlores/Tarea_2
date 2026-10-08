@@ -75,10 +75,11 @@ def kernelgaussianoyfiltrado(imagen, sigma):
 
     return imagenfiltrada
 
-#Aquí se puede modificar el parámetro sigma 
+#AQUÍ SE PUEDE MODIFICAR PARA VER UN SOLO SIGMA, DESCOMENTAR
 #sigma = 2
 #imagenfiltrada = kernelgaussianoyfiltrado(ruidopoisson, sigma= sigma)
 
+#ACA SE ENTREGA UN ARREGLO ARBITRARIO DE SIGMAS 
 #Para la experimentación y análisis, se define un areglo con todos los sigmas probados para graficar. 
 sigmas = [0.5, 0.8, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 7, 10] 
 #Creamos 4 arreglos para almacenar los resultados de los RMSE (máscara 1, máscara 2, máscara 3 y global)
@@ -97,6 +98,8 @@ for sigma in sigmas:
     rmsem3.append(np.sqrt(np.sum((error * m3)**2)/np.sum(m3)))
     rmseg.append(np.sqrt(np.mean(error**2)))
 
+#-----------------------------------------------------------------------------------------
+    #SE PUEDE DESCOMENTAR PARA VER LA IMAGEN FILTRADA PRODUCIDA PARA CADA SIGMA (esta comentado para no retrasar otros resultados)
     #plt.figure(figsize=(12, 4))
     #plt.subplot(1, 2, 1)
     #plt.imshow(ruidopoisson, cmap="gray")
@@ -107,7 +110,7 @@ for sigma in sigmas:
     #plt.title(f"Imagen Filtrada (sigma = {sigma})")
 
     #plt.show()
-
+#-----------------------------------------------------------------------------------------
 
 #Se imprimen los valores solicitados
 for i in range (len(sigmas)):
@@ -118,6 +121,8 @@ for i in range (len(sigmas)):
     print(f"RMSE global = {np.round(rmseg[i],3)}")
     print("__________________________________________________")
 
+#-----------------------------------------------------------------------------------------
+#SE PUEDE DESCOMENTAR EN CONJUNTO A LA LÍNEA CON SOLO UN VALOR DE SIGMA PARA VER SU GRÁFICA
 #plt.figure(figsize=(12, 4))
 #plt.subplot(1, 2, 1)
 #plt.imshow(ruidopoisson, cmap="gray")
@@ -128,6 +133,7 @@ for i in range (len(sigmas)):
 #plt.title(f"Imagen Filtrada (sigma = {sigma})")
 
 #plt.show()
+#-----------------------------------------------------------------------------------------
 
 #___________________________________exp y análisis__________________________
 #Vemos en donde están los mínimos de cada RMSE para poder graficar el punto
@@ -136,6 +142,9 @@ min2 = np.argmin(rmsem2)
 min3 = np.argmin(rmsem3)
 ming = np.argmin(rmseg)
 
+
+#-----------------------------------------------------------------------------------------
+#SE PUEDE DESCOMENTAR PARA VER EL GRÁFICO DE RMSE 
 #Graficamos las curvas de cada RMSE
 #plt.figure(figsize =(12, 4))
 #plt.plot(sigmas, rmsem1, label = "Máscara 1 (círculo)")
@@ -154,13 +163,13 @@ ming = np.argmin(rmseg)
 #plt.legend()
 #plt.title("Gráfica de RMSE para cada sigma definido")
 #plt.show()
+#-----------------------------------------------------------------------------------------
 
-#_____________________________
 #Para el filtro adaptativo generaremos una función por tramos en donde se asigne un sigma cercano al optimo, 
 #pues se vio que en los 4 casos era sigma = 3, entonces para no asignar el mismo sigma a todas las zonas
 #se decidió utilizar los más cercanos sin aumentar de gran manera el RMSE
 def sigmasadaptativos(imagen):
-    primerfiltrado = kernelgaussianoyfiltrado(ruidopoisson, sigma = 2.5)
+    primerfiltrado = kernelgaussianoyfiltrado(ruidopoisson, sigma = 1)
     #El filtrado auxiliar se hace con sigma = 1, tal como se explica en el informe, no se escoge sigma = 3
     #debido a que el hacer el mejor filtrado gaussiano de una vez y luego aplicar el adaptativo genera distorsiones
     #en los bordes de zonas como el círculo.
@@ -208,9 +217,12 @@ plt.subplot(2, 2, 2)
 plt.imshow(imagenfiltradoadaptativo, cmap="gray")
 plt.title("Imagen con filtrado adaptativo")
 
+#-----------------------------------------------------------------------------------------
+#SE PUEDE DESCOMENTAR PARRA VER COMO 3ERA IMAGEN LA ORIGINAL SIN RUIDO EN VEZ DEL MEJOR FILTRADO GAUSSIANO
 #plt.subplot(2, 1, 2)
 #plt.imshow(ims, cmap="gray")
 #plt.title("Imagen Original (sin ruido)")
+#-----------------------------------------------------------------------------------------
 plt.subplot(2, 1, 2)
 plt.imshow(mejorfiltrogaussiano, cmap="gray")
 plt.title("Mejor filtrado gaussiano, sigma = 3")
@@ -230,7 +242,10 @@ rmsem1a = np.sqrt(np.sum((error * m1)**2)/np.sum(m1))
 rmsem2a = np.sqrt(np.sum((error * m2)**2)/np.sum(m2))
 rmsem3a = np.sqrt(np.sum((error * m3)**2)/np.sum(m3))
 rmsega = np.sqrt(np.mean(error**2))
+#-----------------------------------------------------------------------------------------
+#SE PUEDE DESCOMENTAR PARA VER LOS VALORES DE RMSE PARA EL FILTRADO ADAPTATIVO
 #print(f"RMSE m1 = {np.round(rmsem1a,3)}")
 #print(f"RMSE m2 = {np.round(rmsem2a,3)}")
 #print(f"RMSE m3 = {np.round(rmsem3a,3)}")
 #print(f"RMSE global = {np.round(rmsega,3)}")
+#-----------------------------------------------------------------------------------------
