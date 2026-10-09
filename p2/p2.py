@@ -15,5 +15,14 @@ nuevomax = imagennormalizada.max()
 #print(nuevomin) #0.0 
 #print(nuevomax) #1.0
 
-plot.imshow(imagennormalizada, cmap="gray")
+#plot.imshow(imagennormalizada, cmap="gray")
+#plot.show()
+
+np.random.seed(12) #semilla fija para el generador aleatorio
+ruidogaussiano = np.random.normal(0, 0.05, imagennormalizada.shape)
+#definimos el ruido gaussiano con los parámetros solicitados media = 0, desviación estándar = 0.05, y tamaño de la imagen normalizada
+imagenconruido = imagennormalizada + ruidogaussiano #Le aplicamos el ruido gaussiano a la imagen normalizada
+
+plot.imshow(imagenconruido, cmap="gray") 
+plot.title("Imagen con ruido Gaussiano")
 plot.show()
