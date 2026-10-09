@@ -48,7 +48,7 @@ def difanisotropica(Iijt, iteraciones, l, Koeps, modo):
             cTV = 1/ np.sqrt(gradu2 + epsilon**2)
 
         else:
-            cTV = 0
+            cmax = 0
 
         for i in range(1, filas - 1):
             for j in range(1, cols - 1):
@@ -70,15 +70,16 @@ def difanisotropica(Iijt, iteraciones, l, Koeps, modo):
                 elif modo == "cTV":
                     It[i, j] = It[i, j] + l * cTV[i, j] * (DN + DS + DE + DW)
                     
-    return It, cTV
+    return It, cmax
 
 #Procedemos de la misma manera que en la py con los sigmas, esta vez con los epsilons. Pensando que epsilon evita la división por cero,
 #definiremos algunos de los valores cercanos a 0 para ver el comportamiento
 
-epsilons = [0.005, 0.05, 0.1, 1, 10]
+#epsilons = [0.005, 0.05, 0.1, 1, 10]
+epsilons = [0.1]
 for epsilon in epsilons:
-    I = difanisotropica(Iijt = imagenconruido, iteraciones = 10, l = 0.01, Koeps= epsilon, modo = "cTV")[0]
-    cTV = difanisotropica(Iijt = imagenconruido, iteraciones = 10, l = 0.01, Koeps= epsilon, modo = "cTV")[1]
+    I = difanisotropica(Iijt = imagenconruido, iteraciones = 10, l = 10, Koeps= epsilon, modo = "cTV")[0]
+    cTV = difanisotropica(Iijt = imagenconruido, iteraciones = 10, l = 10, Koeps= epsilon, modo = "cTV")[1]
 
     plot.figure(figsize=(12,4))
     plot.subplot(1,2,1)
