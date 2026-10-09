@@ -31,7 +31,8 @@ al mismo tiempo. Se encuentra detallado en el archivo .py que se debe descomenta
     #plt.imshow(imagenfiltrada, cmap="gray")
     #plt.title(f"Imagen Filtrada (sigma = {sigma})")
 
-    #plt.show()```
+    #plt.show()
+```
 
 3. Descomentar para ver el Plot de las curvas de cada RMSE:
   #plt.figure(figsize =(12, 4))
