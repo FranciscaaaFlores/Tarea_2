@@ -21,6 +21,7 @@ según cada uno de los parámetros.
 En este código se encuentran desarrolladas varias acciones, por lo que la mayoría se encuentran comentadas para que no ocurra todo 
 al mismo tiempo. Se encuentra detallado en el archivo .py que se debe descomentar para cada cosa. Entre estas encontramos:
 1. Descomentar para ver el plot de la imagen filtrada producida para cada sigma:
+```python
     #plt.figure(figsize=(12, 4))
     #plt.subplot(1, 2, 1)
     #plt.imshow(ruidopoisson, cmap="gray")
@@ -30,9 +31,9 @@ al mismo tiempo. Se encuentra detallado en el archivo .py que se debe descomenta
     #plt.imshow(imagenfiltrada, cmap="gray")
     #plt.title(f"Imagen Filtrada (sigma = {sigma})")
 
-    #plt.show()
+    #plt.show()```
 
-2. Descomentar para ver el Plot de las curvas de cada RMSE:
+3. Descomentar para ver el Plot de las curvas de cada RMSE:
   #plt.figure(figsize =(12, 4))
   #plt.plot(sigmas, rmsem1, label = "Máscara 1 (círculo)")
   #plt.plot(sigmas, rmsem2, label = "Máscara 2 (cuadrado exc. círculo)")
