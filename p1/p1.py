@@ -183,9 +183,9 @@ def sigmasadaptativos(imagen):
                 sigma[y,x] = 3 #para zonas como el cuadrado, el sigma optimo establecido será 3 (el óptimo real)
             else:
                 sigma[y, x] = 3.5 #para zonas como el círculo, el sigma optimo establecido será 3.5
-    return sigma
+    return sigma, primerfiltrado
 
-arreglosigma = sigmasadaptativos(ruidopoisson)  
+arreglosigma = sigmasadaptativos(ruidopoisson)[0] 
 
 #Definimos una función para el filtro adaptativo
 def filtradoadaptativo(imagen, arreglosigma):
@@ -249,3 +249,14 @@ rmsega = np.sqrt(np.mean(error**2))
 #print(f"RMSE m3 = {np.round(rmsem3a,3)}")
 #print(f"RMSE global = {np.round(rmsega,3)}")
 #-----------------------------------------------------------------------------------------
+
+print("Valores para sigma en un píxel de cada región")
+print("Fondo:", arreglosigma[12,12])
+print("Cuadrado:", arreglosigma[70, 70])
+print("Círculo:", arreglosigma[128, 128])
+
+print("_____________________________________________")
+print("Valores para mu gorro (filtrado auxiliar) en un píxel de cada región")
+print("Fondo:", np.round(sigmasadaptativos(ruidopoisson)[1][12,12],3))
+print("Cuadrado:", np.round(sigmasadaptativos(ruidopoisson)[1][70, 70],3))
+print("Círculo:", np.round(sigmasadaptativos(ruidopoisson)[1][128, 128],3))

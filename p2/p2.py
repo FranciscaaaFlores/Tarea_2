@@ -30,13 +30,23 @@ def h(x, K):
     h = 1 / (1 + (x/K)**2) #Para sacar los coeficientes de difusión
     return h
 
-def difasintropica(Iijt, iteraciones, l, K):
+def difasintropica(Iijt, iteraciones, l, Koeps, modo):
     It = Iijt
     filas = It.shape[0]
     cols = It.shape[1]
     #Para aplicar difusión asintrópica utilizamos las fórmulas vistas en la clase 10, comenzamos calculando 
     #las derivadas direccionales y los coeficientes de difusión
     for t in range(iteraciones):
+        if modo == "cTV":
+            epsilon = Koeps
+            #Tomamos I = u 
+            gradx = np.gradient(It)[0]
+            grady = np.gradient(It)[1]
+            gradu2 = gradx**2 + grady**2
+
+            #Aplicamos la fórmula del enunciado para el coeficiente difusión:
+            cTV = 1/ np.sqrt(gradu2 + epsilon**2)
+
         for i in range(1, filas - 1):
             for j in range(1, cols - 1):
                 DN = It[i - 1, j] -  It[i, j]
@@ -44,12 +54,18 @@ def difasintropica(Iijt, iteraciones, l, K):
                 DE = It[i, j + 1] -  It[i, j]
                 DW = It[i, j - 1] -  It[i, j]
 
-                cN = h(np.abs(DN), K)
-                cS = h(np.abs(DS), K)
-                cE = h(np.abs(DE), K)
-                cW = h(np.abs(DW), K)
+                if modo == "explicito":
+                    K = Koeps
+                    cN = h(np.abs(DN), K)
+                    cS = h(np.abs(DS), K)
+                    cE = h(np.abs(DE), K)
+                    cW = h(np.abs(DW), K)
 
-                #Luego, usamos la fórmula del operador de actualización de forma discreta
-                It[i, j] = It[i, j] + l * (cN * DN + cS * DS + cE * DE + cW * DW)
+                    #Luego, usamos la fórmula del operador de actualización de forma discreta
+                    It[i, j] = It[i, j] + l * (cN * DN + cS * DS + cE * DE + cW * DW)
 
+                elif modo == "cTV":
+                    It[i, j] = It[i, j] + l * cTV[i, j] * (DN + DS + DE + DW)
+                    
     return It
+
