@@ -35,12 +35,13 @@ al mismo tiempo. Se encuentra detallado en el archivo .py que se debe descomenta
 ```
 
 3. Descomentar para ver el Plot de las curvas de cada RMSE:
+```python
   #plt.figure(figsize =(12, 4))
   #plt.plot(sigmas, rmsem1, label = "Máscara 1 (círculo)")
   #plt.plot(sigmas, rmsem2, label = "Máscara 2 (cuadrado exc. círculo)")
   #plt.plot(sigmas, rmsem3, label = "Máscara 3 (fondo)")
   #plt.plot(sigmas, rmseg, label = "Global")
-  
+
   #Ocupamos los índices calculados anteriormente, y graficamos los mínimos como puntos del mismo color de las curvas
   #plt.plot(sigmas[min1], rmsem1[min1], color="blue", marker="o", label=f"Mín m1 ({np.round(sigmas[min1],3)}, {np.round(rmsem1[min1],3)})")
   #plt.plot(sigmas[min2], rmsem2[min2], color="orange", marker="o", label=f"Mín m2 ({np.round(sigmas[min2],3)}, {np.round(rmsem2[min2],3)})")
@@ -52,17 +53,22 @@ al mismo tiempo. Se encuentra detallado en el archivo .py que se debe descomenta
   #plt.legend()
   #plt.title("Gráfica de RMSE para cada sigma definido")
   #plt.show()
+```
 
 3. Descomentar para ver como 3era imagen la original sin ruido en vez del mejor filtro gaussiano.
+```python
   #plt.subplot(2, 1, 2)
   #plt.imshow(ims, cmap="gray")
   #plt.title("Imagen Original (sin ruido)")
+```
 
-4. Descomentar para ver los valors de RMSE para el filtrado adaptativo
+5. Descomentar para ver los valors de RMSE para el filtrado adaptativo
+```python
   #print(f"RMSE m1 = {np.round(rmsem1a,3)}")
   #print(f"RMSE m2 = {np.round(rmsem2a,3)}")
   #print(f"RMSE m3 = {np.round(rmsem3a,3)}")
   #print(f"RMSE global = {np.round(rmsega,3)}")
+```
 
 ### Resultados:
 La salida del código es:
