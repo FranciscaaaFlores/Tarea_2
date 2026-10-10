@@ -11,8 +11,7 @@ y luego filtrar la imagen sintética con ruido Poisson se implementó la funció
 recibe 2 parámetros:
 1. **"imagen"**: Imagen sintética ya creada.
 2. **"sigma"**: Un valor de sigma para definir el kernel y su número de puntos de forma proporcional.
-(Para pasarle a la función un arreglo de sigmas se encuentra en el código un ciclo for que recorre el arreglo "sigmas", en donde
-se puede agregar la cantidad que se desee). 
+(Para pasarle a la función un arreglo de sigmas se encuentra en el código un ciclo for que recorre el arreglo "sigmas", en donde se puede agregar la cantidad que se desee). 
 
 ### Cómo usar:
 Para usar este código, se debe realizar lo antes mencionado, modificar el arreglo "sigmas" con valores arbitrarios a elección. Luego, 
@@ -77,3 +76,22 @@ La salida del código es:
 
 Es posible además obtener la gráfica de la imagen resultado de un arreglo de sigmas, la gráfica de las 3 curvas RMSE, los valores RMSE para el mejor 
 filtro gaussiano, entre otros, para lo cual se deben descomentar las respectivas líneas especificadas arriba.
+
+## P2 (Pregunta 2 — Difusión anisotrópica, Variación Total y diseño del coeficiente de difusión)
+Para esta pregunta se pedía usar una imagen adjuntada con la tarea, pero no se encontró un archivo de imagen en canvas. Se ha utilizado una imagen de ski image (astronaut), la cual mediante las librerías de cv2 se ha pasado a escala de grises.
+En este código 
+
+Para cumplir con el objetivo de esta pregunta que era aplicar difusión anisotrópica, explícita y variación total se ha 
+definido la función difanisotropica(Iijt, iteraciones, l, Koeps, modo) la cual recibe 5 parámetros:
+1. **"Iijt"**: Imagen con ruido gaussiano ya aplicado.
+2. **"iteraciones"**: Número de iteraciones.
+3. **"l"**: Paso temporal. 
+4. **"Koeps"**: En el caso de querer aplicar difusión anisotrópica explícita este parámetro corresponderá a K (el cual se reemplaza en la función h, y en el caso de ser variación total el parámetro corresponde a epsilon. 
+5. **"modo"**: La función cuenta con 2 modos: "explicito" para aplicar difusión anisotrópica explícita y "cTV" para variación total.
+
+### Cómo usar:
+Para usar el código basta con modificar el arreglo "epsilons" (se ha definido de esta manera ya que en lo que se alcanzó a hacer de esta pregunta fue la mayoría variación total, sin embargo si se quiere usar el modo "explicito" se reemplaza en este arreglo los valores deseados para K.
+Posteriormente, el código se encarga de llamar la función, y mediante un for va calculando las imágenes para cada parámetro ingresado en el arreglo. 
+
+### Resultados:
+Tras correr el código se obtiene una serie de imágenes (tantas como parámetros epsilon/K se hayan ingresado), en donde cada una cuenta con 2 imágenes: a) Mapa cVT obtenido y b) Imagen obtenida con el epsilon determinado.
